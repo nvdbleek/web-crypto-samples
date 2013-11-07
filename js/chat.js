@@ -68,18 +68,18 @@ bleeken.sample.chat = (function() {
 	};
 	
 	chat.encrypt = function (data) {
-		if (privateKey == null) {
-			return;
+		if (publicKeyOtherParty == null) {
+			$('#logContainer').append('<div class="text-danger">Public key of other party is missing</div>');
 		}
 		
-		var encryptOp = crypto.subtle.encrypt({ name: "RSAES-PKCS1-v1_5" }, privateKey, chat.str2ab(data));
+		var encryptOp = crypto.subtle.encrypt({ name: "RSAES-PKCS1-v1_5" }, publicKeyOtherParty, chat.str2ab(data));
 		encryptOp.onerror = function (evt) {
 			$('#logContainer').append('<div class="text-danger">Error encrypting data</div>');
         }
 
         encryptOp.oncomplete = function (evt) {
           encryptedData = evt.target.result;
-
+          
           if (encryptedData) {
         	  $('#logContainer').append('<div class="text-muted">Encrypted data</div>');
         	  $('#encryptedMessage').text(Base64Binary.encodeArrayBuffer(encryptedData));
@@ -88,6 +88,29 @@ bleeken.sample.chat = (function() {
           }
 
         }; // encryptOp.oncomplete
+	};
+	
+	chat.decrypt = function (data) {
+		if (privateKey == null) {
+			$('#logContainer').append('<div class="text-danger">Keypair isn\'t generated</div>');;
+		}
+		
+		var decryptOp = crypto.subtle.decrypt({ name: "RSAES-PKCS1-v1_5" }, privateKey, Base64Binary.decodeArrayBuffer(data));
+		decryptOp.onerror = function (evt) {
+			$('#logContainer').append('<div class="text-danger">Error decrypting data</div>');
+		}
+		
+		decryptOp.oncomplete = function (evt) {
+			decryptedData = evt.target.result;
+			
+			if (decryptedData) {
+				$('#logContainer').append('<div class="text-muted">Decrypted data</div>');
+				$('#decryptedMessageOther').text(chat.ab2str(decryptedData));
+			} else {
+				$('#logContainer').append('<div class="text-danger">Error decrypting data</div>');
+			}
+			
+		}; // decryptOp.oncomplete
 	};
 	
 	chat.hasGeneratedKeys = function() {
@@ -118,10 +141,12 @@ bleeken.sample.chat = (function() {
 	});
 	
 	$('#message').keyup(function() {
-		if (bleeken.sample.chat.hasGeneratedKeys()) {
-			bleeken.sample.chat.encrypt($('#message').val());			
-		}
+		bleeken.sample.chat.encrypt($('#message').val());			
 	});
 	
+	$('#messageOther').keyup(function() {
+		bleeken.sample.chat.decrypt($('#messageOther').val());			
+	});
+
 	return chat;
 })();
