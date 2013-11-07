@@ -6,12 +6,16 @@ bleeken.sample.chat = (function() {
 	};
 
 	var crypto = window.crypto || window.msCrypto;
+	
 	var privateKey = null;
+	var publicKey = null;
+	
+	var publicKeyOtherParty = null;
 
 	chat.generateKeyPair = function() {
 		var genOp = crypto.subtle.generateKey(
 		        { name: "RSASSA-PKCS1-v1_5", modulusLength: 2048, publicExponent: new Uint8Array([0x01, 0x00, 0x01]) },
-		        false,
+		        true,
 		        ["encrypt", "decrypt"]);
 		genOp.onerror = function(e) {
 			$('#logContainer').append('<div class="text-danger">Error generating key pair</div>');
@@ -44,6 +48,23 @@ bleeken.sample.chat = (function() {
 				$('#logContainer').append('<div class="text-danger">Error generating key pair</div>');
 			} // if-else
 		} // genOp.oncomplete
+	};
+	
+	chat.addPublicKeyOtherParty = function (data) {
+		var importOp = crypto.subtle.importKey("jwk", Base64Binary.decodeArrayBuffer(data), { name: "RSAES-PKCS1-v1_5" }, false, ["decrypt"]);
+        
+		importOp.onerror = function (evt) { 
+			$('#logContainer').append('<div class="text-danger">Error importing public key other party</div>'); 
+		}
+		importOp.oncomplete = function (evt) {
+			publicKeyOtherParty = evt.target.result;
+			if (publicKeyOtherParty) {
+				$('#logContainer').append('<div class="text-muted">Imported public key other party</div>'); 
+			}
+			else {
+				$('#logContainer').append('<div class="text-danger">Error importing public key other party</div>'); 
+			}
+	    }
 	};
 	
 	chat.encrypt = function (data) {
@@ -90,6 +111,10 @@ bleeken.sample.chat = (function() {
 	// Hook up event listeners
 	$('#generatekeyPair').click(function() {
 		bleeken.sample.chat.generateKeyPair();			
+	});
+	
+	$('#publicKeyOtherParty').change(function() {
+		bleeken.sample.chat.addPublicKeyOtherParty($('#publicKeyOtherParty').val());
 	});
 	
 	$('#message').keyup(function() {
