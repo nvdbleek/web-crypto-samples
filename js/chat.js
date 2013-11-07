@@ -11,6 +11,22 @@ bleeken.sample.chat = (function() {
 	var publicKey = null;
 	
 	var publicKeyOtherParty = null;
+	
+	var logContainer = $('#logContainer');
+	
+	function scrollLog() {
+		logContainer.animate({ scrollTop: logContainer.prop("scrollHeight") - logContainer.height() }, 300);
+	}
+	
+	function logError(msg) {
+		logContainer.append('<div class="text-danger">' + msg + '</div>');
+		scrollLog();
+	}
+	
+	function logInfo(msg) {
+		logContainer.append('<div class="text-muted">' + msg + '</div>');
+		scrollLog();
+	}
 
 	chat.generateKeyPair = function() {
 		var genOp = crypto.subtle.generateKey(
@@ -18,34 +34,34 @@ bleeken.sample.chat = (function() {
 		        true,
 		        ["encrypt", "decrypt"]);
 		genOp.onerror = function(e) {
-			$('#logContainer').append('<div class="text-danger">Error generating key pair</div>');
+			logError('Error generating key pair')
 		}
 		genOp.oncomplete = function(e) {
 			publicKey = e.target.result.publicKey;
 			privateKey = e.target.result.privateKey;
 
 			if (publicKey && privateKey) {
-				$('#logContainer').append('<div class="text-muted">Generated key pair</div>');
+				logInfo('Generated key pair')
 				
 				var exportOp = crypto.subtle.exportKey("jwk", publicKey);
 		        
 				exportOp.onerror = function (evt) { 
-					$('#logContainer').append('<div class="text-danger">Error exporting public key</div>'); 
+					logError('Error exporting public key') 
 				}
 				exportOp.oncomplete = function (evt) {
 			      pubKeyData = new Uint8Array(evt.target.result);
 			      if (pubKeyData) {
-			    	  $('#logContainer').append('<div class="text-muted">Exported public key</div>'); 
+			    	  logInfo('Exported public key') 
 			    	  $('#publicKey').text(Base64Binary.encodeArrayBuffer(pubKeyData));
 			      }
 			      else {
-			    	  $('#logContainer').append('<div class="text-danger">Error exporting public key</div>'); 
+			    	  logError('Error exporting public key') 
 			      }
 			    }
 				
 				
 			} else {
-				$('#logContainer').append('<div class="text-danger">Error generating key pair</div>');
+				logError('Error generating key pair')
 			} // if-else
 		} // genOp.oncomplete
 	};
@@ -54,37 +70,37 @@ bleeken.sample.chat = (function() {
 		var importOp = crypto.subtle.importKey("jwk", Base64Binary.decodeArrayBuffer(data), { name: "RSAES-PKCS1-v1_5" }, false, ["decrypt"]);
         
 		importOp.onerror = function (evt) { 
-			$('#logContainer').append('<div class="text-danger">Error importing public key other party</div>'); 
+			logError('Error importing public key other party') 
 		}
 		importOp.oncomplete = function (evt) {
 			publicKeyOtherParty = evt.target.result;
 			if (publicKeyOtherParty) {
-				$('#logContainer').append('<div class="text-muted">Imported public key other party</div>'); 
+				logInfo('Imported public key other party') 
 			}
 			else {
-				$('#logContainer').append('<div class="text-danger">Error importing public key other party</div>'); 
+				logError('Error importing public key other party') 
 			}
 	    }
 	};
 	
 	chat.encrypt = function (data) {
 		if (publicKeyOtherParty == null) {
-			$('#logContainer').append('<div class="text-danger">Public key of other party is missing</div>');
+			logError('Public key of other party is missing')
 		}
 		
 		var encryptOp = crypto.subtle.encrypt({ name: "RSAES-PKCS1-v1_5" }, publicKeyOtherParty, chat.str2ab(data));
 		encryptOp.onerror = function (evt) {
-			$('#logContainer').append('<div class="text-danger">Error encrypting data</div>');
+			logError('Error encrypting data')
         }
 
         encryptOp.oncomplete = function (evt) {
           encryptedData = evt.target.result;
           
           if (encryptedData) {
-        	  $('#logContainer').append('<div class="text-muted">Encrypted data</div>');
+        	  logInfo('Encrypted data')
         	  $('#encryptedMessage').text(Base64Binary.encodeArrayBuffer(encryptedData));
           } else {
-        	  $('#logContainer').append('<div class="text-danger">Error encrypting data</div>');
+        	  logError('Error encrypting data')
           }
 
         }; // encryptOp.oncomplete
@@ -92,22 +108,22 @@ bleeken.sample.chat = (function() {
 	
 	chat.decrypt = function (data) {
 		if (privateKey == null) {
-			$('#logContainer').append('<div class="text-danger">Keypair isn\'t generated</div>');;
+			logError('Keypair isn\'t generated');
 		}
 		
 		var decryptOp = crypto.subtle.decrypt({ name: "RSAES-PKCS1-v1_5" }, privateKey, Base64Binary.decodeArrayBuffer(data));
 		decryptOp.onerror = function (evt) {
-			$('#logContainer').append('<div class="text-danger">Error decrypting data</div>');
+			logError('Error decrypting data')
 		}
 		
 		decryptOp.oncomplete = function (evt) {
 			decryptedData = evt.target.result;
 			
 			if (decryptedData) {
-				$('#logContainer').append('<div class="text-muted">Decrypted data</div>');
+				logInfo('Decrypted data')
 				$('#decryptedMessageOther').text(chat.ab2str(decryptedData));
 			} else {
-				$('#logContainer').append('<div class="text-danger">Error decrypting data</div>');
+				logError('Error decrypting data')
 			}
 			
 		}; // decryptOp.oncomplete
