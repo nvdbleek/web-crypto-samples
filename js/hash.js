@@ -34,7 +34,7 @@ bleeken.sample.hash = (function() {
 	}
 
 	hash.hash = function (data) {
-		var digestOp = webCrypto.digest({ name: "SHA-256" }, new Uint8Array(hash.str2ab(data)));
+		var digestOp = webCrypto.digest({ name: "SHA-256" }, new Uint8Array(bleeken.sample.utils.str2ab(data)));
 		digestOp.onerror = function (evt) {
 			logError('Error hash data')
         }
@@ -44,36 +44,13 @@ bleeken.sample.hash = (function() {
           
           if (digestValue) {
         	  logInfo('Hashed data')
-        	  $('#hash').text(hash.abv2hex(digestValue));
+        	  $('#hash').text(bleeken.sample.utils.abv2hex(digestValue));
           } else {
         	  logError('Error hashing data')
           }
 
         }; // digestOp.oncomplete
 	};
-	
-	hash.ab2str = function (buf) {
-	  return String.fromCharCode.apply(null, new Uint8Array(buf));
-	}
-
-	hash.str2ab = function (str) {
-		var buf = new ArrayBuffer(str.length);
-		var bufView = new Uint8Array(buf);
-		for (var i=0, strLen=str.length; i<strLen; i++) {
-			bufView[i] = str.charCodeAt(i);
-		}
-		return buf;
-	}
-	
-	hash.abv2hex = function (abv) {
-        var b = new Uint8Array(abv.buffer, abv.byteOffset, abv.byteLength);
-        var hex = "";
-        for (var i=0; i <b.length; ++i) {
-            var zeropad = (b[i] < 0x10) ? "0" : "";
-            hex += zeropad + b[i].toString(16);
-        }
-        return hex;
-    }
 	
 	$('#message').keyup(function() {
 		bleeken.sample.hash.hash($('#message').val());			

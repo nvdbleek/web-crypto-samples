@@ -67,7 +67,7 @@ bleeken.sample.sign = (function() {
 				  else {
 					  evt.target.result.kty = "RSA";
 					  evt.target.result.extractable = true;
-					  pubKeyDataBase64 = Base64Binary.encodeArrayBuffer(sign.str2ab(JSON.stringify(evt.target.result)));
+					  pubKeyDataBase64 = Base64Binary.encodeArrayBuffer(bleeken.sample.utils.str2ab(JSON.stringify(evt.target.result)));
 				  }
 				  
 			      if (pubKeyDataBase64) {
@@ -90,7 +90,7 @@ bleeken.sample.sign = (function() {
 		var dataDecoded = Base64Binary.decodeArrayBuffer(data);
 		var alg;
 		if (jwkAsObject) {
-			var str = sign.ab2str(dataDecoded);
+			var str = bleeken.sample.utils.ab2str(dataDecoded);
 			str = str.charCodeAt(str.length - 1) === 0?str.substring(0, str.length - 1):str; // Remove trailing 0 character if present
 			dataDecoded = JSON.parse(str);
 			alg = "RSASSA-PKCS1-v1_5"; // TODO Fix polycript, this should be a dictionary
@@ -119,7 +119,7 @@ bleeken.sample.sign = (function() {
 			logError('Public key of other party is missing')
 		}
 		
-		var signOp = webCrypto.sign({ name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, privateKey, new Uint8Array(sign.str2ab(data)));
+		var signOp = webCrypto.sign({ name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, privateKey, new Uint8Array(bleeken.sample.utils.str2ab(data)));
 		signOp.onerror = function (evt) {
 			logError('Error signing data')
         }
@@ -142,7 +142,7 @@ bleeken.sample.sign = (function() {
 			logError('Keypair isn\'t generated');
 		}
 		
-		var verifyOp = webCrypto.verify({ name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, publicKeyOtherParty, new Uint8Array(Base64Binary.decodeArrayBuffer(signature)), new Uint8Array(sign.str2ab(message)));
+		var verifyOp = webCrypto.verify({ name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, publicKeyOtherParty, new Uint8Array(Base64Binary.decodeArrayBuffer(signature)), new Uint8Array(bleeken.sample.utils.str2ab(message)));
 		verifyOp.onerror = function (evt) {
 			logError('Error verifying data')
 		}
@@ -166,19 +166,6 @@ bleeken.sample.sign = (function() {
 	sign.hasGeneratedKeys = function() {
 		return privateKey != null;
 	};
-	
-	sign.ab2str = function (buf) {
-	  return String.fromCharCode.apply(null, new Uint8Array(buf));
-	}
-
-	sign.str2ab = function (str) {
-		var buf = new ArrayBuffer(str.length);
-		var bufView = new Uint8Array(buf);
-		for (var i=0, strLen=str.length; i<strLen; i++) {
-			bufView[i] = str.charCodeAt(i);
-		}
-		return buf;
-	}
 	
 	
 	// Hook up event listeners
