@@ -17,36 +17,20 @@ bleeken.sample.hash = (function() {
 		jwkAsObject = true;
 	}
 	
-	var logContainer = $('#logContainer');
-	
-	function scrollLog() {
-		logContainer.animate({ scrollTop: logContainer.prop("scrollHeight") - logContainer.height() }, 300);
-	}
-	
-	function logError(msg) {
-		logContainer.append('<div class="text-danger">' + msg + '</div>');
-		scrollLog();
-	}
-	
-	function logInfo(msg) {
-		logContainer.append('<div class="text-muted">' + msg + '</div>');
-		scrollLog();
-	}
-
 	hash.hash = function (data) {
 		var digestOp = webCrypto.digest({ name: "SHA-256" }, new Uint8Array(bleeken.sample.utils.str2ab(data)));
 		digestOp.onerror = function (evt) {
-			logError('Error hash data')
+			bleeken.sample.utils.logError('Error hash data')
         }
 
         digestOp.oncomplete = function (evt) {
         	digestValue = evt.target.result;
           
           if (digestValue) {
-        	  logInfo('Hashed data')
+        	  bleeken.sample.utils.logInfo('Hashed data')
         	  $('#hash').text(bleeken.sample.utils.abv2hex(digestValue));
           } else {
-        	  logError('Error hashing data')
+        	  bleeken.sample.utils.logError('Error hashing data')
           }
 
         }; // digestOp.oncomplete

@@ -4,6 +4,22 @@ bleeken.sample.utils = (function() {
 	var utils = {
 		version : "1.0"
 	};
+	
+	var logContainer = $('#logContainer');
+	
+	function scrollLog() {
+		logContainer.animate({ scrollTop: logContainer.prop("scrollHeight") - logContainer.height() }, 300);
+	}
+	
+	utils.logError = function (msg) {
+		logContainer.append('<div class="text-danger">' + msg + '</div>');
+		scrollLog();
+	}
+	
+	utils.logInfo = function (msg) {
+		logContainer.append('<div class="text-muted">' + msg + '</div>');
+		scrollLog();
+	}
 
 	utils.ab2str = function (buf) {
 	  return String.fromCharCode.apply(null, new Uint8Array(buf));

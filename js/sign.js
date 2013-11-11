@@ -23,41 +23,25 @@ bleeken.sample.sign = (function() {
 	
 	var publicKeyOtherParty = null;
 	
-	var logContainer = $('#logContainer');
-	
-	function scrollLog() {
-		logContainer.animate({ scrollTop: logContainer.prop("scrollHeight") - logContainer.height() }, 300);
-	}
-	
-	function logError(msg) {
-		logContainer.append('<div class="text-danger">' + msg + '</div>');
-		scrollLog();
-	}
-	
-	function logInfo(msg) {
-		logContainer.append('<div class="text-muted">' + msg + '</div>');
-		scrollLog();
-	}
-
 	sign.generateKeyPair = function() {
 		var genOp = webCrypto.generateKey(
 		        { name: "RSASSA-PKCS1-v1_5", modulusLength: 2048, publicExponent: new Uint8Array([0x01, 0x00, 0x01]) },
 		        true,
 		        ["sign", "verify"]);
 		genOp.onerror = function(e) {
-			logError('Error generating key pair')
+			bleeken.sample.utils.logError('Error generating key pair')
 		}
 		genOp.oncomplete = function(e) {
 			publicKey = e.target.result.publicKey;
 			privateKey = e.target.result.privateKey;
 
 			if (publicKey && privateKey) {
-				logInfo('Generated key pair')
+				bleeken.sample.utils.logInfo('Generated key pair')
 				
 				var exportOp = webCrypto.exportKey("jwk", publicKey);
 		        
 				exportOp.onerror = function (evt) { 
-					logError('Error exporting public key') 
+					bleeken.sample.utils.logError('Error exporting public key') 
 				}
 				exportOp.oncomplete = function (evt) {
 				  var pubKeyDataBase64;
@@ -71,17 +55,17 @@ bleeken.sample.sign = (function() {
 				  }
 				  
 			      if (pubKeyDataBase64) {
-			    	  logInfo('Exported public key') 
+			    	  bleeken.sample.utils.logInfo('Exported public key') 
 			    	  $('#publicKey').text(pubKeyDataBase64);
 			      }
 			      else {
-			    	  logError('Error exporting public key') 
+			    	  bleeken.sample.utils.logError('Error exporting public key') 
 			      }
 			    }
 				
 				
 			} else {
-				logError('Error generating key pair')
+				bleeken.sample.utils.logError('Error generating key pair')
 			} // if-else
 		} // genOp.oncomplete
 	};
@@ -101,38 +85,38 @@ bleeken.sample.sign = (function() {
 		var importOp = webCrypto.importKey("jwk", dataDecoded, alg, false, ["sign", "verify"]);
         
 		importOp.onerror = function (evt) { 
-			logError('Error importing public key other party') 
+			bleeken.sample.utils.logError('Error importing public key other party') 
 		}
 		importOp.oncomplete = function (evt) {
 			publicKeyOtherParty = evt.target.result;
 			if (publicKeyOtherParty) {
-				logInfo('Imported public key other party') 
+				bleeken.sample.utils.logInfo('Imported public key other party') 
 			}
 			else {
-				logError('Error importing public key other party') 
+				bleeken.sample.utils.logError('Error importing public key other party') 
 			}
 	    }
 	};
 	
 	sign.sign = function (data) {
 		if (privateKey == null) {
-			logError('Keypair isn\'t generated');
+			bleeken.sample.utils.logError('Keypair isn\'t generated');
 			return;
 		}
 		
 		var signOp = webCrypto.sign({ name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, privateKey, new Uint8Array(bleeken.sample.utils.str2ab(data)));
 		signOp.onerror = function (evt) {
-			logError('Error signing data')
+			bleeken.sample.utils.logError('Error signing data')
         }
 
         signOp.oncomplete = function (evt) {
           signedData = evt.target.result;
           
           if (signedData) {
-        	  logInfo('signed data')
+        	  bleeken.sample.utils.logInfo('signed data')
         	  $('#signature').text(Base64Binary.encodeArrayBuffer(signedData));
           } else {
-        	  logError('Error signing data')
+        	  bleeken.sample.utils.logError('Error signing data')
           }
 
         }; // signOp.oncomplete
@@ -140,26 +124,26 @@ bleeken.sample.sign = (function() {
 	
 	sign.verify = function (message, signature) {
 		if (publicKeyOtherParty == null) {
-			logError('Public key of other party is missing');
+			bleeken.sample.utils.logError('Public key of other party is missing');
 			return;
 		}
 		
 		var verifyOp = webCrypto.verify({ name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, publicKeyOtherParty, new Uint8Array(Base64Binary.decodeArrayBuffer(signature)), new Uint8Array(bleeken.sample.utils.str2ab(message)));
 		verifyOp.onerror = function (evt) {
-			logError('Error verifying data')
+			bleeken.sample.utils.logError('Error verifying data')
 		}
 		
 		verifyOp.oncomplete = function (evt) {
 			verifyedData = evt.target.result;
 			
 			if (verifyedData) {
-				logInfo('Verified data');
+				bleeken.sample.utils.logInfo('Verified data');
 				$('#signatureOther').addClass('signature-valid');
 				$('#signatureOther').removeClass('signature-invalid');
 			} else {
 				$('#signatureOther').addClass('signature-invalid');
 				$('#signatureOther').removeClass('signature-valid');
-				logError('Error verifying data')
+				bleeken.sample.utils.logError('Error verifying data')
 			}
 			
 		}; // verifyOp.oncomplete
