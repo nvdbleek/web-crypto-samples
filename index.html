@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+<title>Web Crypto Samples</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="polycrypt/common/util.js"></script>
+<script src="polycrypt/front/polycrypt.js"></script>
+
+<!-- Bootstrap -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<style type="text/css">
+	.signature-valid {
+		background-color: #dff0d8; 
+		color: #468847;
+	}
+
+	.signature-invalid {
+		background-color: #f0dfd8; 
+		color: #884647;
+	}
+
+</style>
+</head>
+<body>
+	<nav class="navbar navbar-default" role="navigation">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse"
+				data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">Toggle navigation</span> <span
+					class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="index.html">Crypto samples</a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse"
+			id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<li ><a href="hash.html">Hash</a></li>
+				<li ><a href="sign.html">Sign</a></li>
+				<li><a href="encrypt.html">Encrypt &amp; Decrypt</a></li>
+			</ul>
+			<ul class="nav navbar-nav pull-right">
+				<li><a href="debug.html"><span class="glyphicon glyphicon-link"></span></a></li>
+			</ul>
+		</div>
+	</nav>
+	<section class="container">
+		<h2>What can I find here?</h2>
+		<p>This website demonstrates basic usage of the <a href="http://www.w3.org/TR/WebCryptoAPI/">Web Cryptography API</a> developed by w3c.</p>
+		<p>You can find all the code at <a href="https://github.com/nvdbleek/web-crypto-samples">https://github.com/nvdbleek/web-crypto-samples</a>.
+		All the code is provided under the MIT license.</p> 
+	</section>
+	
+	<section class="container">
+		<h2>The hash sample</h2>
+		<p>The <a href="hash.html">hash</a> sample demonstrates the usage of the <code>digest()</code> function using the <code>SHA-256</code> hashing function.</p>
+	</section>
+
+	<section class="container">
+		<h2>The sign &amp; verify sample</h2>
+		<p>The <a href="sign.html">sign &amp; verify</a> sample demonstrates the usage of the <code>sign()</code>, <code>verify()</code>, <code>exportKey()</code> and <code>importKey()</code> functions using <code>RSASSA-PKCS1-v1_5</code>.</p>
+	</section>
+
+	<section class="container">
+		<h2>The encrypt &amp; decrypt sample</h2>
+		<p>The <a href="encrypt.html">encrypt &amp; decrypt</a> sample demonstrates the usage of the <code>encrypt()</code>, <code>decrypt()</code>, <code>exportKey()</code> and <code>importKey()</code> functions using <code>RSAES-PKCS1-v1_5</code>.</p>
+	</section>
+
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="js/lib/jquery-2.0.3.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="js/lib/bootstrap.min.js"></script>
+	<script src="js/lib/base64.js"></script>
+</body>
+</html>
