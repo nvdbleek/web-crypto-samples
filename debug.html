@@ -41,7 +41,7 @@
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="#">Hash</a></li>
+				<li ><a href="hash.html">Hash</a></li>
 				<li ><a href="sign.html">Sign</a></li>
 				<li><a href="encrypt.html">Encrypt &amp; Decrypt</a></li>
 			</ul>
@@ -50,39 +50,27 @@
 			</ul>
 		</div>
 	</nav>
-	<section class="container lead">
-		This example demonstrates the usage of the <code>digest()</code> function using the <code>SHA-256</code> hashing function.
-	</section>
 	<section class="container">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion" href="#encryptBody">Hash</a>
+					<a data-toggle="collapse" data-parent="#accordion" href="#encryptBody">Base64 Decode</a>
 				</h3>
 			</div>
 			<div id="encryptBody">
 				<div class="panel-body">
 					<form role="form">
 						<div class="form-group">
-							<label for="message">Message</label>
-							<textarea class="form-control" rows="4" id="message"></textarea>
+							<label for="message">Base64 Encoded</label>
+							<textarea class="form-control" rows="6" id="message"></textarea>
 						</div>
 						<div class="form-group">
-							<label for="hash">Hash</label>
-							<textarea class="form-control" rows="1" id="hash"></textarea>
+							<label for="message-decoded">Decoded</label>
+							<textarea class="form-control" rows="12" id="message-decoded"></textarea>
 						</div>
 					</form>
 				</div>
 			</div>
-		</div>
-	</section>
-	<section class="container" style="margin-top:20px;">
-		<div class="panel panel-warning">
-		  <div class="panel-heading">
-		    <h3 class="panel-title">Log</h3>
-		  </div>
-		  <div id="logContainer" class="panel-body pre-scrollable" style="height:200px">
-		  </div>
 		</div>
 	</section>
 
@@ -92,6 +80,16 @@
 	<script src="js/lib/bootstrap.min.js"></script>
 	<script src="js/lib/base64.js"></script>
 	<script src="js/utils.js"></script>
-	<script src="js/hash.js"></script>
+	<script type="text/javascript">
+		$('#message').keyup(function() {
+			var decoded = bleeken.sample.utils.ab2str(Base64Binary.decodeArrayBuffer($('#message').val()));
+			try {
+				$('#message-decoded').text(JSON.stringify(JSON.parse(decoded), null, '\t'));
+			}
+			catch(err) {
+				$('#message-decoded').text(decoded);
+			}
+		});
+	</script>
 </body>
 </html>
