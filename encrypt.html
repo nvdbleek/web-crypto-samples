@@ -11,18 +11,6 @@
 <!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
 
-<style type="text/css">
-	.signature-valid {
-		background-color: #dff0d8; 
-		color: #468847;
-	}
-
-	.signature-invalid {
-		background-color: #f0dfd8; 
-		color: #884647;
-	}
-
-</style>
 </head>
 <body>
 	<nav class="navbar navbar-default" role="navigation">
@@ -42,8 +30,8 @@
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<li><a href="hash.html">Hash</a></li>
-				<li class="active"><a href="#">Sign</a></li>
-				<li><a href="encrypt.html">Encrypt &amp; Decrypt</a></li>
+				<li><a href="sign.html">Sign &amp; Verify</a></li>
+				<li class="active"><a href="#">Encrypt &amp; Decrypt</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -76,19 +64,19 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" data-parent="#accordion" href="#encryptBody">Sign</a>
+						<a data-toggle="collapse" data-parent="#accordion" href="#encryptBody">Send Message</a>
 					</h3>
 				</div>
 				<div id="encryptBody" class="panel-collapse collapse">
 					<div class="panel-body">
 						<form role="form">
 							<div class="form-group">
-								<label for="message">Message</label>
+								<label for="message">Encrypt Message</label>
 								<textarea class="form-control" rows="4" id="message"></textarea>
 							</div>
 							<div class="form-group">
-								<label for="signature">Signature</label>
-								<textarea class="form-control" rows="4" id="signature"></textarea>
+								<label for="encryptedMessage">Encrypted Message</label>
+								<textarea class="form-control" rows="4" id="encryptedMessage"></textarea>
 							</div>
 						</form>
 					</div>
@@ -97,19 +85,19 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" data-parent="#accordion" href="#decryptBody">Verify</a>
+						<a data-toggle="collapse" data-parent="#accordion" href="#decryptBody">Receive Message</a>
 					</h3>
 				</div>
 				<div id="decryptBody" class="panel-collapse collapse">
 					<div class="panel-body">
 						<form role="form">
 							<div class="form-group">
-								<label for="messageOther">Message</label>
-								<textarea class="form-control" rows="4" id="messageOther"></textarea>
+								<label for="encryptedMessageOther">Encrypted Message</label>
+								<textarea class="form-control" rows="4" id="encryptedMessageOther"></textarea>
 							</div>
 							<div class="form-group">
-								<label for="signatureOther">Signature</label>
-								<textarea class="form-control" rows="4" id="signatureOther"></textarea>
+								<label for="messageOther">Decrypted Message</label>
+								<textarea class="form-control" rows="4" id="messageOther"></textarea>
 							</div>
 							<div id="result"></div>
 						</form>
@@ -134,6 +122,6 @@
 	<script src="js/lib/bootstrap.min.js"></script>
 	<script src="js/lib/base64.js"></script>
 	<script src="js/utils.js"></script>
-	<script src="js/sign.js"></script>
+	<script src="js/encrypt.js"></script>
 </body>
 </html>
