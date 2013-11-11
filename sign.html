@@ -4,9 +4,25 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 <title>Web Crypto Samples</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="polycrypt/common/util.js"></script>
+<script src="polycrypt/front/polycrypt.js"></script>
+
 <!-- Bootstrap -->
 <link href="css/bootstrap.min.css" rel="stylesheet">
 
+<style type="text/css">
+	.signature-valid {
+		background-color: #dff0d8; 
+		color: #468847;
+	}
+
+	.signature-invalid {
+		background-color: #f0dfd8; 
+		color: #884647;
+	}
+
+</style>
 </head>
 <body>
 	<nav class="navbar navbar-default" role="navigation">
@@ -25,7 +41,7 @@
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="#">Chat</a></li>
+				<li class="active"><a href="#">Sign</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -58,7 +74,7 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" data-parent="#accordion" href="#encryptBody">Send</a>
+						<a data-toggle="collapse" data-parent="#accordion" href="#encryptBody">Sign</a>
 					</h3>
 				</div>
 				<div id="encryptBody" class="panel-collapse collapse">
@@ -69,8 +85,8 @@
 								<textarea class="form-control" rows="4" id="message"></textarea>
 							</div>
 							<div class="form-group">
-								<label for="encryptedMessage">Encrypted Message</label>
-								<textarea class="form-control" rows="4" id="encryptedMessage"></textarea>
+								<label for="signature">Signature</label>
+								<textarea class="form-control" rows="4" id="signature"></textarea>
 							</div>
 						</form>
 					</div>
@@ -79,20 +95,21 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h3 class="panel-title">
-						<a data-toggle="collapse" data-parent="#accordion" href="#decryptBody">Recieve</a>
+						<a data-toggle="collapse" data-parent="#accordion" href="#decryptBody">Verify</a>
 					</h3>
 				</div>
 				<div id="decryptBody" class="panel-collapse collapse">
 					<div class="panel-body">
 						<form role="form">
 							<div class="form-group">
-								<label for="messageOther">Encrypted Message Other Party</label>
+								<label for="messageOther">Message</label>
 								<textarea class="form-control" rows="4" id="messageOther"></textarea>
 							</div>
 							<div class="form-group">
-								<label for="decryptedMessageOther">Decrypted Message Other Party</label>
-								<textarea class="form-control" rows="4" id="decryptedMessageOther"></textarea>
+								<label for="signatureOther">Signature</label>
+								<textarea class="form-control" rows="4" id="signatureOther"></textarea>
 							</div>
+							<div id="result"></div>
 						</form>
 					</div>
 				</div>
@@ -114,6 +131,6 @@
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
 	<script src="js/lib/bootstrap.min.js"></script>
 	<script src="js/lib/base64.js"></script>
-	<script src="js/chat.js"></script>
+	<script src="js/sign.js"></script>
 </body>
 </html>
