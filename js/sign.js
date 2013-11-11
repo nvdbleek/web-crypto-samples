@@ -116,7 +116,8 @@ bleeken.sample.sign = (function() {
 	
 	sign.sign = function (data) {
 		if (privateKey == null) {
-			logError('Public key of other party is missing')
+			logError('Keypair isn\'t generated');
+			return;
 		}
 		
 		var signOp = webCrypto.sign({ name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, privateKey, new Uint8Array(bleeken.sample.utils.str2ab(data)));
@@ -139,7 +140,8 @@ bleeken.sample.sign = (function() {
 	
 	sign.verify = function (message, signature) {
 		if (publicKeyOtherParty == null) {
-			logError('Keypair isn\'t generated');
+			logError('Public key of other party is missing');
+			return;
 		}
 		
 		var verifyOp = webCrypto.verify({ name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, publicKeyOtherParty, new Uint8Array(Base64Binary.decodeArrayBuffer(signature)), new Uint8Array(bleeken.sample.utils.str2ab(message)));
