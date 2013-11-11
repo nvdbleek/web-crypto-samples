@@ -29,7 +29,8 @@ bleeken.sample.encrypt = (function() {
 			publicExponent : new Uint8Array([ 0x01, 0x00, 0x01 ])
 		}, true, [ "encrypt", "decrypt" ]);
 		genOp.onerror = function(e) {
-			bleeken.sample.utils.logError('Error generating key pair')
+			bleeken.sample.utils.logError('Error generating key pair');
+			$('#loading').css('display', 'none');
 		}
 		genOp.oncomplete = function(e) {
 			publicKey = e.target.result.publicKey;
@@ -68,7 +69,9 @@ bleeken.sample.encrypt = (function() {
 			} else {
 				bleeken.sample.utils.logError('Error generating key pair')
 			} // if-else
+			$('#loading').css('display', 'none');
 		} // genOp.oncomplete
+		$('#loading').css('display', 'inline');
 	};
 
 	encrypt.addPublicKeyOtherParty = function(data) {
