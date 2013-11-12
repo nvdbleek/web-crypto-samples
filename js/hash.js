@@ -5,18 +5,6 @@ bleeken.sample.hash = (function() {
 		version : "1.0"
 	};
 
-	var webCrypto;
-	if (window.crypto && window.crypto.subtle) {
-		webCrypto = window.crypto.subtle;
-	}
-	else if (window.msCrypto && window.msCrypto.subtle) {
-		webCrypto = window.msCrypto.subtle;
-	}
-	else {
-		webCrypto = window.polycrypt;
-		jwkAsObject = true;
-	}
-	
 	function processDigest(digestValue) {
 		if (digestValue) {
 			bleeken.sample.utils.logInfo('Hashed data')
@@ -27,10 +15,10 @@ bleeken.sample.hash = (function() {
 	}
 	
 	hash.hash = function (data) {
-		var digestOp = webCrypto.digest({ name: "SHA-256" }, new Uint8Array(bleeken.sample.utils.str2ab(data)));
+		var digestOp = bleeken.sample.utils.webCrypto.digest({ name: "SHA-256" }, new Uint8Array(bleeken.sample.utils.str2ab(data)));
 		if (digestOp.then !== undefined) {
 			// Promise API
-			digestOp.then(processDigest, bleeken.sample.utils.logError.bind(bleeken.sample.utils,'Error hashing data'))
+			digestOp.then(processDigest, bleeken.sample.utils.logError.bind(bleeken.sample.utils,'Error hashing data'));
 		}
 		else {
 			// Event based API

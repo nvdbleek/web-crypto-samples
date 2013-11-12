@@ -5,25 +5,13 @@ bleeken.sample.encrypt = (function() {
 		version : "1.0"
 	};
 
-	var webCrypto;
-	var jwkAsObject = false; // Some implementations want the jwk as an
-	// object others as a ByteArrayBuffer
-	if (window.crypto && window.crypto.subtle) {
-		webCrypto = window.crypto.subtle;
-	} else if (window.msCrypto && window.msCrypto.subtle) {
-		webCrypto = window.msCrypto.subtle;
-	} else {
-		webCrypto = window.polycrypt;
-		jwkAsObject = true;
-	}
-
 	var privateKey = null;
 	var publicKey = null;
 
 	var publicKeyOtherParty = null;
 
 	encrypt.generateKeyPair = function() {
-		var genOp = webCrypto.generateKey({
+		var genOp = bleeken.sample.utils.webCrypto.generateKey({
 			name : "RSAES-PKCS1-v1_5",
 			modulusLength : 2048,
 			publicExponent : new Uint8Array([ 0x01, 0x00, 0x01 ])
@@ -39,7 +27,7 @@ bleeken.sample.encrypt = (function() {
 			if (publicKey && privateKey) {
 				bleeken.sample.utils.logInfo('Generated key pair')
 
-				var exportOp = webCrypto.exportKey("jwk", publicKey);
+				var exportOp = bleeken.sample.utils.webCrypto.exportKey("jwk", publicKey);
 
 				exportOp.onerror = function(evt) {
 					bleeken.sample.utils.logError('Error exporting public key')
@@ -77,7 +65,7 @@ bleeken.sample.encrypt = (function() {
 	encrypt.addPublicKeyOtherParty = function(data) {
 		var dataDecoded = Base64Binary.decodeArrayBuffer(data);
 		var alg;
-		if (jwkAsObject) {
+		if (bleeken.sample.utils.jwkAsObject) {
 			var str = bleeken.sample.utils.ab2str(dataDecoded);
 			str = str.charCodeAt(str.length - 1) === 0?str.substring(0, str.length - 1):str; // Remove trailing 0 character if present
 			dataDecoded = JSON.parse(str);
@@ -86,7 +74,7 @@ bleeken.sample.encrypt = (function() {
 		else {
 			alg = { name: "RSAES-PKCS1-v1_5" };
 		}
-		var importOp = webCrypto.importKey("jwk", dataDecoded, alg, false, [ "encrypt", "decrypt" ]);
+		var importOp = bleeken.sample.utils.webCrypto.importKey("jwk", dataDecoded, alg, false, [ "encrypt", "decrypt" ]);
 
 		importOp.onerror = function(evt) {
 			bleeken.sample.utils.logError('Error importing public key other party')
@@ -108,14 +96,14 @@ bleeken.sample.encrypt = (function() {
 		
 		//TODO fix polycrypt
 		var alg;
-		if (jwkAsObject) {
+		if (bleeken.sample.utils.jwkAsObject) {
 			alg = "RSAES-PKCS1-v1_5"
 		}
 		else {
 			alg = { name : "RSAES-PKCS1-v1_5" };
 		}
 
-		var encryptOp = webCrypto.encrypt(alg, publicKeyOtherParty, new Uint8Array(bleeken.sample.utils.str2ab(data)));
+		var encryptOp = bleeken.sample.utils.webCrypto.encrypt(alg, publicKeyOtherParty, new Uint8Array(bleeken.sample.utils.str2ab(data)));
 		encryptOp.onerror = function(evt) {
 			bleeken.sample.utils.logError('Error encrypting data')
 		}
@@ -141,14 +129,14 @@ bleeken.sample.encrypt = (function() {
 		
 		//TODO fix polycrypt
 		var alg;
-		if (jwkAsObject) {
+		if (bleeken.sample.utils.jwkAsObject) {
 			alg = "RSAES-PKCS1-v1_5"
 		}
 		else {
 			alg = { name : "RSAES-PKCS1-v1_5" };
 		}
 
-		var decryptOp = webCrypto.decrypt(alg, privateKey, new Uint8Array(Base64Binary.decodeArrayBuffer(data)));
+		var decryptOp = bleeken.sample.utils.webCrypto.decrypt(alg, privateKey, new Uint8Array(Base64Binary.decodeArrayBuffer(data)));
 		decryptOp.onerror = function(evt) {
 			bleeken.sample.utils.logError('Error decrypting data')
 		}

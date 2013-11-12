@@ -5,26 +5,13 @@ bleeken.sample.sign = (function() {
 		version : "1.0"
 	};
 
-	var webCrypto;
-	var jwkAsObject = false; // Some implementations want the jwk as an object others as a ByteArrayBuffer
-	if (window.crypto && window.crypto.subtle) {
-		webCrypto = window.crypto.subtle;
-	}
-	else if (window.msCrypto && window.msCrypto.subtle) {
-		webCrypto = window.msCrypto.subtle;
-	}
-	else {
-		webCrypto = window.polycrypt;
-		jwkAsObject = true;
-	}
-	
 	var privateKey = null;
 	var publicKey = null;
 	
 	var publicKeyOtherParty = null;
 	
 	sign.generateKeyPair = function() {
-		var genOp = webCrypto.generateKey(
+		var genOp = bleeken.sample.utils.webCrypto.generateKey(
 		        { name: "RSASSA-PKCS1-v1_5", modulusLength: 2048, publicExponent: new Uint8Array([0x01, 0x00, 0x01]) },
 		        true,
 		        ["sign", "verify"]);
@@ -39,7 +26,7 @@ bleeken.sample.sign = (function() {
 			if (publicKey && privateKey) {
 				bleeken.sample.utils.logInfo('Generated key pair')
 				
-				var exportOp = webCrypto.exportKey("jwk", publicKey);
+				var exportOp = bleeken.sample.utils.webCrypto.exportKey("jwk", publicKey);
 		        
 				exportOp.onerror = function (evt) { 
 					bleeken.sample.utils.logError('Error exporting public key') 
@@ -76,7 +63,7 @@ bleeken.sample.sign = (function() {
 	sign.addPublicKeyOtherParty = function (data) {
 		var dataDecoded = Base64Binary.decodeArrayBuffer(data);
 		var alg;
-		if (jwkAsObject) {
+		if (bleeken.sample.utils.jwkAsObject) {
 			var str = bleeken.sample.utils.ab2str(dataDecoded);
 			str = str.charCodeAt(str.length - 1) === 0?str.substring(0, str.length - 1):str; // Remove trailing 0 character if present
 			dataDecoded = JSON.parse(str);
@@ -85,7 +72,7 @@ bleeken.sample.sign = (function() {
 		else {
 			alg = { name: "RSASSA-PKCS1-v1_5" };
 		}
-		var importOp = webCrypto.importKey("jwk", dataDecoded, alg, false, ["sign", "verify"]);
+		var importOp = bleeken.sample.utils.webCrypto.importKey("jwk", dataDecoded, alg, false, ["sign", "verify"]);
         
 		importOp.onerror = function (evt) { 
 			bleeken.sample.utils.logError('Error importing public key other party') 
@@ -107,7 +94,7 @@ bleeken.sample.sign = (function() {
 			return;
 		}
 		
-		var signOp = webCrypto.sign({ name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, privateKey, new Uint8Array(bleeken.sample.utils.str2ab(data)));
+		var signOp = bleeken.sample.utils.webCrypto.sign({ name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, privateKey, new Uint8Array(bleeken.sample.utils.str2ab(data)));
 		signOp.onerror = function (evt) {
 			bleeken.sample.utils.logError('Error signing data')
         }
@@ -131,7 +118,7 @@ bleeken.sample.sign = (function() {
 			return;
 		}
 		
-		var verifyOp = webCrypto.verify({ name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, publicKeyOtherParty, new Uint8Array(Base64Binary.decodeArrayBuffer(signature)), new Uint8Array(bleeken.sample.utils.str2ab(message)));
+		var verifyOp = bleeken.sample.utils.webCrypto.verify({ name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, publicKeyOtherParty, new Uint8Array(Base64Binary.decodeArrayBuffer(signature)), new Uint8Array(bleeken.sample.utils.str2ab(message)));
 		verifyOp.onerror = function (evt) {
 			bleeken.sample.utils.logError('Error verifying data')
 		}

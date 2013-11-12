@@ -44,5 +44,21 @@ bleeken.sample.utils = (function() {
         return hex;
     }
 	
+	utils.jwkAsObject = false; // Some implementations want the jwk as an
+	
+	// object others as a ByteArrayBuffer
+	if (window.crypto && window.crypto.subtle) {
+		utils.logInfo('Using standard Web Crytography API.');
+		utils.webCrypto = window.crypto.subtle;
+	} else if (window.msCrypto && window.msCrypto.subtle) {
+		utils.logInfo('Using MS Web Crytography API.');
+		utils.webCrypto = window.msCrypto.subtle;
+	} else {
+		utils.logInfo('No native Web Crytography API, falling back to polycrypt.');
+		utils.webCrypto = window.polycrypt;
+		utils.jwkAsObject = true;
+	}
+	
+	
 	return utils;
 })();
