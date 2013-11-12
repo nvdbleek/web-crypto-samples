@@ -24,7 +24,7 @@ bleeken.sample.sign = (function() {
 			privateKey = e.target.result.privateKey;
 
 			if (publicKey && privateKey) {
-				bleeken.sample.utils.logInfo('Generated key pair')
+				bleeken.sample.utils.logInfo('Generated key pair');
 				
 				var exportOp = bleeken.sample.utils.webCrypto.exportKey("jwk", publicKey);
 		        
