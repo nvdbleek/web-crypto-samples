@@ -10,6 +10,10 @@ bleeken.sample.sign = (function() {
 	
 	var publicKeyOtherParty = null;
 	
+	if (!bleeken.sample.utils.supportsJWKImportAndExport) {
+		$('#unsupported-browser').css('display', 'block');
+	}
+	
 	sign.generateKeyPair = function() {
 		var genOp = bleeken.sample.utils.webCrypto.generateKey(
 		        { name: "RSASSA-PKCS1-v1_5", modulusLength: 2048, publicExponent: new Uint8Array([0x01, 0x00, 0x01]) },

@@ -9,6 +9,10 @@ bleeken.sample.encrypt = (function() {
 	var publicKey = null;
 
 	var publicKeyOtherParty = null;
+	
+	if (!bleeken.sample.utils.supportsJWKImportAndExport) {
+		$('#unsupported-browser').css('display', 'block');
+	}
 
 	encrypt.generateKeyPair = function() {
 		var genOp = bleeken.sample.utils.webCrypto.generateKey({

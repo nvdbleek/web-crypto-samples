@@ -20,6 +20,7 @@ bleeken.sample.utils = (function() {
 		logContainer.append('<div class="text-muted">' + msg + '</div>');
 		scrollLog();
 	}
+	
 
 	utils.ab2str = function (buf) {
 	  return String.fromCharCode.apply(null, new Uint8Array(buf));
@@ -45,6 +46,7 @@ bleeken.sample.utils = (function() {
     }
 	
 	utils.jwkAsObject = false; // Some implementations want the jwk as an
+	utils.supportsJWKImportAndExport = false; // TODO need better detection
 	
 	// object others as a ByteArrayBuffer
 	if (window.crypto && window.crypto.subtle) {
@@ -53,10 +55,12 @@ bleeken.sample.utils = (function() {
 	} else if (window.msCrypto && window.msCrypto.subtle) {
 		utils.logInfo('Using MS Web Crytography API.');
 		utils.webCrypto = window.msCrypto.subtle;
+		utils.supportsJWKImportAndExport = true;
 	} else {
 		utils.logInfo('No native Web Crytography API, falling back to polycrypt.');
 		utils.webCrypto = window.polycrypt;
 		utils.jwkAsObject = true;
+		utils.supportsJWKImportAndExport = true;
 	}
 	
 	
